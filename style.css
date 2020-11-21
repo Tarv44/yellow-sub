@@ -199,6 +199,9 @@ body {
     .icon-wrapper {
         width: 30%;
     }
+    .random-img {
+        max-height: 400px;
+    }
 }
 
 .hidden {
