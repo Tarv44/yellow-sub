@@ -1,18 +1,32 @@
 
+const randomCount = 24
+
+let quote = ''
+
+let randomImage = generateRandomImgElement()
+
 function generateQuoteElement(responseJSON) {
     console.log(responseJSON)
+    console.log(responseJSON.content.length)
     return `<p class="quote">"${responseJSON.content}"</p><p class="credit"> - ${responseJSON.originator.name}</p>`
 }
 
-function displayQuoteImage(responseJSON) {
-    
-    $('.quote-wrapper').html(generateQuoteElement(responseJSON))
-    $('.quote-wrapper').removeClass('hidden')
-    $('.image-wrapper').removeClass('hidden')
+function generateRandomImgElement() {
+    const randomPhotoNum = Math.floor(Math.random()*randomCount + 1)
+    return `<img class="random-img" src="img/random-photos/${randomPhotoNum}.jpg" alt="Random picture of friends">`
 }
 
-function getQuoteImage() {
-    $('.icon-wrapper').addClass('hidden')
+function renderQuoteImage() {
+    $('.quote-wrapper').html(quote)
+    $('.image-wrapper').html(randomImage)
+}
+
+function displayQuoteImage() {
+    $('.app-container').removeClass('fadedLeft')
+    $('.app-container').removeClass('hidden')
+}
+
+function getQuote() {
     fetch("https://quotes15.p.rapidapi.com/quotes/random/", {
         "headers": {
             "x-rapidapi-key": "6ed26ec87bmshc2d94822fdb7eeap11432bjsn54d6d7f84ec2",
@@ -25,7 +39,12 @@ function getQuoteImage() {
         }
         throw new Error(response.statusText)
     })
-    .then(responseJSON => displayQuoteImage(responseJSON))
+    .then(responseJSON => {
+        if (responseJSON.content.length <= 100) {
+            quote = generateQuoteElement(responseJSON)
+        } else {
+            setTimeout(getQuote, 1000)
+        }})
     .catch(err => {
         console.error(err);
     });
@@ -35,17 +54,44 @@ function getQuoteImage() {
 
 function transitionDisplay() {
     console.log('transitionDisplay ran.')
-    $('.icon-wrapper').addClass('faded')
+    $('.icon-button').addClass('faded')
     $('.intro').addClass('dark')
-    setTimeout(getQuoteImage,1000);
+    setTimeout(function() {
+        $(displayQuoteImage)
+        $('.icon-wrapper').addClass('hidden')
+        $(getQuote)
+        randomImage = generateRandomImgElement()
+    }, 500)
+    
 }
 
 
-function watchForm() {
-    $('.icon').one('mouseenter', function() {
-        console.log('watchForm ran.')
+function watchIcon() {
+    $('.icon-button').click(function() {
+        console.log('watchIcon ran.')
+        $(renderQuoteImage)
         $(transitionDisplay)
     })
 }
 
-setTimeout(watchForm, 2000)
+function watchNext() {
+    $('.next-btn').click(function() {
+        console.log('watchNext ran.')
+        $('.app-container').addClass('fadedLeft')
+        setTimeout(function() {
+            $('.app-container').addClass('hidden')
+            $(renderQuoteImage)
+            setTimeout(displayQuoteImage, 500)
+            $(getQuote)
+            randomImage = generateRandomImgElement()
+        }, 1000);
+    })
+}
+
+function watchForm() {
+    $(getQuote)
+    $(watchIcon)
+    $(watchNext)
+}
+
+$(watchForm)
