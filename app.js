@@ -17,8 +17,14 @@ function generateRandomImgElement() {
 }
 
 function renderQuoteImage() {
-    $('.quote-wrapper').html(quote)
-    $('.image-wrapper').html(randomImage)
+    if (quote.length > 0) {
+        $('.quote-wrapper').html(quote)
+        $('.image-wrapper').html(randomImage)
+    } else {
+        getQuote()
+        renderQuoteImage()
+    }
+    
 }
 
 function displayQuoteImage() {

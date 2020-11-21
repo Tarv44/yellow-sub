@@ -33,7 +33,7 @@ body {
     transition: 1s linear;
     opacity: 0;
     transform: translateY(-200px) rotate(180deg);
-    animation: spinFade 1s ease-out 1s 1 both;
+    animation: spinFade 1.3s ease-out 1s 1 both;
 }
 
 
